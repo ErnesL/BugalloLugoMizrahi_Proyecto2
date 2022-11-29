@@ -4,11 +4,6 @@
  */
 package bugallolugomizrahi_proyecto2;
 
-/**
- *
- * @author davidmizrahi
- * @param <T>
- */
 public class Stack<T> {
     
     private Nodo<T> pTop;
@@ -27,7 +22,7 @@ public class Stack<T> {
     
     /**
      *
-     * @return
+     * @return 
      */
     public boolean isEmpty(){
     
@@ -35,7 +30,7 @@ public class Stack<T> {
     }
     
     /**
-     *
+     *Apila un elemento de tipo T
      * @param data
      */
     public void push(T data){
@@ -52,7 +47,7 @@ public class Stack<T> {
     }
     
     /**
-     *Desapila el ultimo elemento en ingresar a la pila
+     *Desapila un elemento de tipo T
      * @return tipo de dato T
      */
     public T pop(){
@@ -68,41 +63,10 @@ public class Stack<T> {
         }
         return null;
     }
-    
     /**
-     *Imprime los elementos de la pila
+     * 
+     * @return tipo de dato T
      */
-    public void printStack(){
-    
-        Nodo<T> aux = this.pTop;
-        
-        while(aux != null){
-            
-            System.out.println(aux.getInfo());
-            
-            aux = aux.getpNext();
-        }
-        
-        if(isEmpty()){
-        
-            System.out.println("Stack Empty");
-        }
-    }
-    
-    /**
-     */
-    public void emptyStack(){
-    
-        while(this.pTop != null){
-        
-            this.pTop = this.pTop.getpNext();
-            
-            //size--;
-        }
-        System.out.println("Empty");
-
-    }
-
     public Nodo<T> getpTop() {
         return pTop;
     }
