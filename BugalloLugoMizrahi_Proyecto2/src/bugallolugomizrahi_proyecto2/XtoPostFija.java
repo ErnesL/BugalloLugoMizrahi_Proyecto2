@@ -10,8 +10,13 @@ package bugallolugomizrahi_proyecto2;
  * @author juand
  */
 public class XtoPostFija {
-
-    public static String infijaAPostFija(String infija) {//se le pasa la operacion infija como argumento
+// Metodo de infija a postifja
+    /**
+     * Metodo para pasar un string dado en notacion infija a postfija.
+     * @param infija
+     * @return String
+     */
+    public static String infijaAPostFija(String infija) {
         String postfija = "";
         Stack<Character> pila = new Stack<>();
         for (int i = 0; i < infija.length(); i++) {
@@ -56,7 +61,7 @@ public class XtoPostFija {
         }
         return postfija;
     }
-
+//se le asginan los valores de prioridad a los operadores a ser apilados
     public static int prioridadExp(char x) {
         if (x == '^') {
             return 3;
@@ -70,7 +75,7 @@ public class XtoPostFija {
 
         return 0;
     }
-
+//se le asginan los valores de prioridad a los operadores que ya se encuentran en la pila
     public static int prioridadPila(char x) {
         if (x == '^') {
             return 3;
@@ -84,6 +89,34 @@ public class XtoPostFija {
 
         return 0;
     }
+     public static NodoG insercionArbol(String posfijo){
+        
+        Stack<NodoG> stack = new Stack<>();
+        NodoG root = null;
+        
+        char[] caracteres = posfijo.toCharArray();
+        
+        for(char c : caracteres){
+            if(Character.isLetter(c) || Character.isDigit(c)){
+                stack.push(new NodoG(c));
+                
+            }else{
+                
+                ArbolBinario arbol = new ArbolBinario();
+                
+                arbol.setRoot(new NodoG(c));
+                root = arbol.getRoot();
+                root.setHijoDerecho(stack.pop());
+                root.setHijoIzquierdo(stack.pop());
+                
+                stack.push(root);
+                
+            }
+        }
+        return root;
+        
+        
+    }
 
     public static boolean esOperador(char letra) {
         if (letra == '*' || letra == '/' || letra == '+' || letra == '-' || letra == '^') {
@@ -91,5 +124,41 @@ public class XtoPostFija {
         } else {
             return false;
         }
+    }
+    
+// Metodo de prefija a postifja
+    /**
+     * Metodo para pasar un string dado en notacion prefija a postfija.
+     * @param prefija
+     * @return String
+     */
+    public static String prefijaAPostFija(String prefija) {//se le pasa la operacion prefija como argumento
+        String postfija = "";
+        Stack<String> pila = new Stack<>();
+        //se recorre la prefija al reves
+        for (int i = (prefija.length()- 1); i >= 0; i--) {
+            char letra = prefija.charAt(i);
+            //si es operador hacer
+            if (esOperador(letra)) {
+                //se desapilan dos operandos y se concatenan con el operador en el string "temporal" para luego ser apilado
+                String temporal = new String();
+                temporal += pila.pop();
+                temporal += pila.pop();
+                temporal += letra;
+                
+                pila.push(temporal);
+            }
+            //si es operando hacer
+            if (Character.isLetter(prefija.charAt(i)) || Character.isDigit(prefija.charAt(i))) {
+                // se pasa el operando al string "temporal2" y se apila
+                String temporal2 = new String();
+                temporal2 += letra;
+                pila.push(temporal2);
+            }
+        }
+        // se concatena con el string vacio "postfija" el string contenido en el tope de la pila (es decir el resultado de la conversión)
+        postfija += pila.pop();
+        return postfija;
+
     }
 }

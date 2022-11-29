@@ -5,6 +5,19 @@
  */
 package bugallolugomizrahi_proyecto2.interfaz;
 
+import bugallolugomizrahi_proyecto2.ArbolBinario;
+import bugallolugomizrahi_proyecto2.ImprimirArbol;
+import bugallolugomizrahi_proyecto2.NodoG;
+import bugallolugomizrahi_proyecto2.XtoPostFija;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+
 /**
  *
  * @author ernes
@@ -14,7 +27,9 @@ public class interfaz extends javax.swing.JFrame {
     /**
      * Creates new form interfaz
      */
+    private ArbolBinario tree;
     public interfaz() {
+        this.tree = new ArbolBinario();
         initComponents();
     }
 
@@ -28,15 +43,182 @@ public class interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        impresion = new javax.swing.JTextArea();
+        agregarTXT = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        impresion.setColumns(20);
+        impresion.setRows(5);
+        jScrollPane1.setViewportView(impresion);
+
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 10, 240, 400));
+
+        agregarTXT.setText("Agregar txt");
+        agregarTXT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarTXTActionPerformed(evt);
+            }
+        });
+        jPanel2.add(agregarTXT, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, -1, -1));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 510, 420));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 300));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void agregarTXTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarTXTActionPerformed
+        // TODO add your handling code here:
+               //JFileChooser
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setDialogTitle("Selecciona un archivo con terminación (.txt) para el Arbol Binario");
+        jfc.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT", "txt");
+        jfc.addChoosableFileFilter(filter);
+
+        int returnValue = jfc.showOpenDialog(null);
+
+        //Si el usuario agrega un txt.
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String auxpath = jfc.getSelectedFile().getPath();
+
+            //Empezamos a leer el archivo cargado         
+            try ( BufferedReader br = Files.newBufferedReader(Paths.get(auxpath))) {
+
+                //Lectura linea por linea
+                String line = br.readLine();
+                boolean noError = true;
+                boolean flag = false;
+
+                while (noError) {
+                    //Aqui nos llega la linea con la expresion.
+                    //TODO Hay que hacer la lógica para ver cual de las expresiones tenemos
+                    //TODO verificaciones de si existen elementos errados en la linea
+                    int count = 0;
+                    line = line.replaceAll("\\s+", "");
+                    //Comprobacion de si existen elementos no admitibles en el string de entrada
+                    for (int i = 0; i < line.length(); i++) {
+                        if (line.charAt(i) == '-' || line.charAt(i) == '+' || line.charAt(i) == '/' || line.charAt(i) == '*' || line.charAt(i) == '^' || Character.isLetter(line.charAt(i)) || Character.isDigit(line.charAt(i))) {
+
+                        } else if (line.charAt(i) == '(' || line.charAt(i) == ')') {
+                            count++;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error, se han encontrado caracteres no admitibles");
+                            noError = false;
+                            break;
+                        }
+
+                    }
+
+                    if (count % 2 != 0) {
+                        System.out.println(count);
+                        JOptionPane.showMessageDialog(null, "Error, se ha detectado una expresion Infija la cual tiene parentesis no cerrados");
+                        noError = false;
+                        break;
+                    }
+
+                    break;
+
+                }
+
+                //PREFIJA (Si el primer caracter es un operador la expresion es PREFIJA)
+                if (//TODO: CAMBIAR ESTE CODIGO POR UNA FUNCION
+                        line.charAt(0) == '-' || line.charAt(0) == '+' || line.charAt(0) == '/' || line.charAt(0) == '*' || line.charAt(0) == '^') {
+                    //TODO CODIGO PREFIJA
+                    System.out.println("PREFIJA");
+                    String newLine = XtoPostFija.prefijaAPostFija(line);
+                    
+                    tree.setRoot(XtoPostFija.insercionArbol(newLine));
+                    JOptionPane.showMessageDialog(null, "Expresión prefija agregada exitosamente");
+                } //POSTFIJA (Si el ultimo caracter es un operador la expresion es POSTFIJA
+                else if (line.charAt(line.length() - 1) == '-' || line.charAt(line.length() - 1) == '+' || line.charAt(line.length() - 1) == '/' || line.charAt(line.length() - 1) == '*' || line.charAt(line.length() - 1) == '^') {
+                    //TODO CODIGO POSTFIJA
+                    
+                    
+//                    impresion.setText("Recorridos");
+//                    String s = "";
+//                    String s1 = "";
+//                    String s2 = "";
+//                    tree.setRoot(XtoPostFija.insercionArbol(line));
+//                    impresion.append("Infija: "+ tree.inorden(tree.getRoot(), s)+ "\n" + "Posfija: "+ tree.postorden(tree.getRoot(), s1)+ "\n"+ "Prefija: " + tree.preorden(tree.getRoot(), s2));
+                    JOptionPane.showMessageDialog(null, "Expresión postifja agregada exitosamente");
+                } //INFIJA (Si no es ninguna de las otras, es INFIJA) 
+                else {
+                    //TODO CODIGO INFIJA
+                    System.out.println("Infija");
+                    //Codigo para chequear la existencia de operadores entre operandos
+                    for (int i = 0; i < line.length(); i++) {
+                        boolean primero;
+                        boolean segundo;
+
+                        if (line.charAt(i) == '-' || line.charAt(i) == '+' || line.charAt(i) == '/' || line.charAt(i) == '*' || line.charAt(i) == '^' || line.charAt(i) == '(' || line.charAt(i) == ')') {
+                            primero = true;
+                        } else {
+                            primero = false;
+                        }
+                        if (Character.isLetter(line.charAt(i)) || Character.isDigit(line.charAt(i))) {
+                            segundo = true;
+                        } else {
+                            segundo = false;
+                        }
+
+                        if (primero == segundo) {
+                            JOptionPane.showMessageDialog(null, "Error, se han detectado dos operandos o dos operadores iguales para una expresion INFIJA");
+                            flag = true;
+                            break;
+
+                        }
+
+                    }
+                    //CODIGO PARA IMPRIMIR ARBOL
+                    String newLine = XtoPostFija.infijaAPostFija(line);
+                    tree.setRoot(XtoPostFija.insercionArbol(newLine));
+                    String s = "";
+                    String post = tree.postorden(tree.getRoot(), s);
+                    String printTree = "";
+                    String ans = ImprimirArbol.print2DUtil(tree.getRoot(), 0, printTree);
+                    impresion.setText(ans);
+                    JOptionPane.showMessageDialog(null, post);
+
+                    System.out.println(line);
+                }
+
+//                if (flag = true) {
+//                    this.dispose();
+//                } else {
+//
+//                    System.out.println(line);
+//                }
+
+//                    if (!BT.isEmpty()) {
+//                    JOptionPane.showMessageDialog(null, "El arbol binario se ha cargado con éxito");
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Error, el archivo .txt que estas ingresando es vacio");
+//                }
+                //Final del error de expresion
+//           
+
+                    impresion.setText("Recorridos" + "\n");
+                    String s = "";
+                    String s1 = "";
+                    String s2 = "";
+                    tree.setRoot(XtoPostFija.insercionArbol(line));
+                    impresion.append("Infija: "+ tree.inorden(tree.getRoot(), s)+ "\n" + "Posfija: "+ tree.postorden(tree.getRoot(), s1)+ "\n"+ "Prefija: " + tree.preorden(tree.getRoot(), s2));
+            } catch (IOException e) {
+                System.err.format("IOException: %s%n", e);
+            }
+
+        }
+    }//GEN-LAST:event_agregarTXTActionPerformed
 
     /**
      * @param args the command line arguments
@@ -74,6 +256,10 @@ public class interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton agregarTXT;
+    private javax.swing.JTextArea impresion;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
